@@ -20,7 +20,7 @@ const BuyCredit = () => {
       name:'Credits Payment',
       description:'Credits Payment',
       order_id:order.id,
-      receipt:order.receipt,
+      
       handler: async(response)=>{
         try {
           const res=axios.post(backendUrl+'api/user/verify-pay',response,{headers:{token}})
@@ -38,6 +38,9 @@ const BuyCredit = () => {
     }
     const rzp=new window.Razorpay(options)
     rzp.open()
+    rzp.on('payment.failed', function (response) {
+      toast.error("Payment Failed: " + response.error.description);
+    });
   }
   const paymentRazorpay=async(planId)=>{
     try {

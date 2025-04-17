@@ -141,14 +141,9 @@ const paymentRazorpay = async (req, res) => {
             currency:process.env.CURRENCY,
             receipt:newTransaction._id.toString()
         }
-        await razorpayInstance.orders.create(options,(error,order)=>{
-            if(error){
-                console.log(error);
-                return res.json({success:false,message:error})
-            }
+        const order= await razorpayInstance.orders.create(options);
             return res.json({success:true,order})
 
-        })
     } catch (error) {
         console.log(error);
         res.json({
