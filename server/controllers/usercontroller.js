@@ -32,38 +32,74 @@ const registerUser = async (req, res) => {
     }
 
 }
+// const LoginUser = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+//         const user = await userModel.findOne({ email })
+
+//         if (!user) {
+//             res.json({
+//                 success: false,
+//                 message: 'User does not exist'
+//             })
+//         }
+//         const isMatch = await bcrypt.compare(password, user.password)
+
+//         if (isMatch) {
+
+//             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+//             console.log(token);
+//             res.json({
+//                 success: true,
+//                 token,
+//                 user: { name: user.name }
+//             })
+//         }
+//         else {
+//             return res.json({ success: false, message: 'Invalid credentials' })
+//         }
+
+//     } catch (error) {
+//         console.log(error);
+//         res.json({ success: false, message: error.message })
+//     }
+// }
+
 const LoginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await userModel.findOne({ email })
 
+        const user = await userModel.findOne({ email });
         if (!user) {
-            res.json({
+            return res.json({
                 success: false,
-                message: 'User does not exist'
-            })
+                message: 'User does not exist',
+            });
         }
-        const isMatch = await bcrypt.compare(password, user.password)
 
-        if (isMatch) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.json({
+                success: false,
+                message: 'Invalid credentials',
+            });
+        }
 
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-            console.log(token);
-            res.json({
-                success: true,
-                token,
-                user: { name: user.name }
-            })
-        }
-        else {
-            return res.json({ success: false, message: 'Invalid credentials' })
-        }
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '1d', // optional: adds token expiration
+        });
+
+        return res.json({
+            success: true,
+            token,
+            user: { name: user.name },
+        });
 
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: error.message })
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
-}
+};
 
 const userCredits = async (req, res) => {
     try {
@@ -72,7 +108,7 @@ const userCredits = async (req, res) => {
         const user = await userModel.findById(userId);
 
         res.json({
-            success: true, credit: user.creditBalance,
+            success: true, credits: user.creditBalance,
             user: {
                 name: user.name
             }
@@ -92,10 +128,7 @@ const razorpayInstance = new razorpay({
 const paymentRazorpay = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { planId } = req.body
-
-        console.log(userId);
-
+        const { planId } = req.body;
 
         const userData = await userModel.findById(userId);
 
@@ -159,14 +192,14 @@ const verifyRazorpay=async(req,res)=>{
         const {razorpay_order_id}=req.body;
         const orderInfo=await razorpayInstance.orders.fetch(razorpay_order_id)
 
-        if(orderInfo.status==='Paid'){
+        if(orderInfo.status==='paid'){
             const transactionData=await transactionModel.findById(orderInfo.receipt)
             if(transactionData.payment){
                 return res.json({success:false,message:'Payment Failed'})
             }
             const userData=await userModel.findById(transactionData.userId)
 
-            const creditBalance=userData.creditBalance+transactionData.credit
+            const creditBalance=userData.creditBalance+transactionData.credits;
             await userModel.findByIdAndUpdate(userData._id,{creditBalance})
             await transactionModel.findByIdAndUpdate(transactionData._id,{payment:true})
 

@@ -23,7 +23,11 @@ const BuyCredit = () => {
       
       handler: async(response)=>{
         try {
-          const res=axios.post(backendUrl+'api/user/verify-pay',response,{headers:{token}})
+          const res = await axios.post(
+            backendUrl + 'api/user/verify-pay',
+            response,
+            { headers: { token } }
+          );
           if(res.data.success){
             loadCreditsData();
             navigate('/');

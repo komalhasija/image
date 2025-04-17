@@ -21,7 +21,7 @@ const Login = () => {
                     { email, password })
 
                 if (res.data.success) {
-                    setToken(res.data.Token)
+                    setToken(res.data.token)
                     setUser(res.data.user)
                     localStorage.setItem('token', res.data.token)
                     setShowLogin(false)

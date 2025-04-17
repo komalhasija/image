@@ -11,6 +11,8 @@ const AppContextProvider = (props) => {
     const [showLogin, setShowLogin] = useState(false);
     const [token,setToken]=useState(localStorage.getItem('token'))
 
+
+
     const [credit,setCredit]=useState(false);
 
     const logout=()=>{
@@ -28,7 +30,7 @@ const AppContextProvider = (props) => {
             })
             console.log(res);
             if (res.data.success) {
-                setCredit(res.data.credit)
+                setCredit(res.data.credits);
                 setUser(res.data.user)
                 console.log(credit);
             }
