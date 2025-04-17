@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../components/Header.jsx'
-import Steps from '../components/steps.jsx'
+import Steps from '../components/Steps.jsx'
 import Description from '../components/Description.jsx'
 import Testimonials from '../components/Testimonials.jsx'
 import Generate from '../components/Generate.jsx'
