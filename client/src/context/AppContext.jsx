@@ -13,7 +13,7 @@ const AppContextProvider = (props) => {
 
 
 
-    const [credit,setCredit]=useState(false);
+    const [credits,setCredit]=useState(false);
 
     const logout=()=>{
         localStorage.removeItem('token');
@@ -31,8 +31,8 @@ const AppContextProvider = (props) => {
             console.log(res);
             if (res.data.success) {
                 setCredit(res.data.credits);
-                setUser(res.data.user)
-                console.log(credit);
+                setUser(res.data.user);
+                console.log(credits);
             }
             else{
                 toast.error(res.data.message);
@@ -75,7 +75,7 @@ const AppContextProvider = (props) => {
         }
     },[token])
     const value = {
-        user, setUser, showLogin, setShowLogin, backendUrl,token,setToken,credit,setCredit,loadCreditsData,logout,generateImage
+        user, setUser, showLogin, setShowLogin, backendUrl,token,setToken,credits,setCredit,loadCreditsData,logout,generateImage
     }
     return (
         <AppContext.Provider value={value}>
