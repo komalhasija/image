@@ -22,7 +22,7 @@ const AppContextProvider = (props) => {
     }
 
  
-    const backendUrl = https://image-gkxi.onrender.com/;
+    const backendUrl = "https://image-gkxi.onrender.com/";
     const loadCreditsData=async()=>{
         try {
             const res=await axios.get(backendUrl+'api/user/credits',{
