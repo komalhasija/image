@@ -35,7 +35,7 @@ const BuyCredit = () => {
           }
           
         } catch (error) {
-          toast.error(error.message);
+          toast.error(error?.response?.data?.message || error.message);
 
         }
       }
@@ -50,6 +50,7 @@ const BuyCredit = () => {
     try {
       if(!user){
         setShowLogin(true);
+          return; 
       }
       const res=await axios.post(backendUrl+'api/user/razor-pay',{planId},{headers:{token}})
 
